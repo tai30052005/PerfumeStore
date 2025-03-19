@@ -1,4 +1,3 @@
-    
 /**
  *
  * @author PC
@@ -12,11 +11,14 @@ package dal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -33,14 +35,6 @@ public abstract class GenericDAO<T> extends DBContext {
     public static final boolean CONDITION_AND = true;
     public static final boolean CONDITION_OR = false;
 
-    /**
-     * Hàm này sử dụng để get dữ liệu từ database lên dựa trên tên bảng mà bạn
-     * mong muốn.Hàm sẽ mặc định trả về một List có thể có giá trị hoặc List
-     * rỗng
-     *
-     * @param clazz: tên bảng bạn muốn get dữ liệu về
-     * @return list
-     */
     protected List<T> queryGenericDAO(Class<T> clazz) {
         List<T> result = new ArrayList<>();
         try {
@@ -194,6 +188,15 @@ public abstract class GenericDAO<T> extends DBContext {
     private static Object getFieldValue(ResultSet rs, Field field) throws SQLException {
         Class<?> fieldType = field.getType();
         String fieldName = field.getName();
+
+        // Kiểm tra xem fieldType có phải là một collection (như List, Set, ...) hay không
+        if (Collection.class.isAssignableFrom(fieldType)) {
+            return null; // Bỏ qua và không xử lý gì nữa
+        } // Kiểm tra xem fieldType có phải là một Map hay không
+        else if (Map.class.isAssignableFrom(fieldType)) {
+            return null; // Bỏ qua và không xử lý gì nữa
+        }
+
         // Kiểm tra kiểu dữ liệu và convert sang đúng kiểu
         if (fieldType == String.class) {
             return rs.getString(fieldName);
@@ -207,6 +210,8 @@ public abstract class GenericDAO<T> extends DBContext {
             return rs.getBoolean(fieldName);
         } else if (fieldType == float.class || fieldType == Float.class) {
             return rs.getFloat(fieldName);
+        } else if (fieldType == Timestamp.class) {
+            return rs.getTimestamp(fieldName);
         } else {
             return rs.getObject(fieldName);
         }
