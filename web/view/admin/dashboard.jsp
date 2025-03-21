@@ -132,7 +132,7 @@
                         </div>
                         <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
                     </div>
-                    <jsp:include page="../common/admin/user-details.jsp"></jsp:include>
+                    <%--<jsp:include page="../common/admin/user-details.jsp"></jsp:include>--%>
                     </div>
                     <!-- /.container-fluid -->
 

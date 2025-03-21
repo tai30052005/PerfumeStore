@@ -26,6 +26,7 @@ import org.apache.tomcat.jni.SSLContext;
  * @author PC
  */
 public class DashboardServlet extends HttpServlet {
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -53,8 +54,7 @@ public class DashboardServlet extends HttpServlet {
     }
 
     ProductDAO productDAO = new ProductDAO();
-     CategoryDAO categoryDAO = new CategoryDAO();
-     AccountDAO accountDAO = new AccountDAO();
+    CategoryDAO categoryDAO = new CategoryDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -62,16 +62,12 @@ public class DashboardServlet extends HttpServlet {
         HttpSession session = request.getSession();
         List<Product> listProduct = productDAO.findAll();
         List<Category> listCategory = categoryDAO.findAll();
-        List<Account> listAccount = accountDAO.findAll();
 
         session.setAttribute(CommonConst.SESSION_PRODUCT, listProduct);
         session.setAttribute(CommonConst.SESSION_CATEGORY, listCategory);
-        session.setAttribute(CommonConst.SESSION_ACCOUNT, listAccount);
-        
+
         // chuyen sang trang dashboard
-        
         request.getRequestDispatcher("../view/admin/dashboard.jsp").forward(request, response);
-        
 
     }
 
